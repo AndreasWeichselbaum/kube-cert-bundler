@@ -94,13 +94,16 @@ while IFS= read -r cluster; do
         fi
     fi
 
-    # Decode base64 CA data and save to PEM file
-    echo "$CA_DATA" | base64 -d > "$PEM_FILE"
-    chmod 644 "$PEM_FILE"
+    # Decode base64 CA data to temp file
+    TEMP_CA=$(mktemp)
+    echo "$CA_DATA" | base64 -d > "$TEMP_CA"
 
-    # Append certificate bundle
+    # Create PEM file: bundle certs first, then cluster CA
+    cat "$BUNDLE_PATH" > "$PEM_FILE"
     echo "" >> "$PEM_FILE"
-    cat "$BUNDLE_PATH" >> "$PEM_FILE"
+    cat "$TEMP_CA" >> "$PEM_FILE"
+    chmod 644 "$PEM_FILE"
+    rm "$TEMP_CA"
 
     echo "  ✓ Created: $PEM_FILE"
 

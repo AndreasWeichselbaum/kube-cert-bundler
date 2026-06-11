@@ -63,7 +63,7 @@ export KUBECONFIG=/custom/path/config
 3. **For each cluster**:
    - Extracts the cluster's CA certificate (from inline `certificate-authority-data` or from a `certificate-authority` file reference)
    - Saves it to a `.pem` file in the same directory as your kubeconfig (named `{cluster-name}-ca.pem`)
-   - Appends your custom CA bundle to the end of the file
+   - Prepends your custom CA bundle, followed by the cluster's original CA
    - Updates the kubeconfig to reference the new `.pem` file instead of inline certificate data
    - Removes the inline certificate data from kubeconfig
 
@@ -111,8 +111,8 @@ Processing cluster: staging-cluster
 ```
 
 After running this, your kubeconfig now references:
-- `~/.kube/prod-cluster-ca.pem` (contains original CA + corporate bundle)
-- `~/.kube/staging-cluster-ca.pem` (contains original CA + corporate bundle)
+- `~/.kube/prod-cluster-ca.pem` (contains corporate bundle + original CA)
+- `~/.kube/staging-cluster-ca.pem` (contains corporate bundle + original CA)
 
 ## Requirements
 
